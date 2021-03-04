@@ -272,7 +272,7 @@ class Command_Line_Python_Space_Simulator():
 
                 def refresh_simplified_coordinates(self):
                     for x in range(0, 3):
-                        self.simplified_coordinates[x] = math.ceil(self.detailed_coordinates[x])
+                        self.simplified_coordinates[x] = math.floor(self.detailed_coordinates[x])
                     time.sleep(0.1)
 
                 def calculate_coordinates_delta(self):
@@ -304,6 +304,7 @@ class Command_Line_Python_Space_Simulator():
                     self.position = position
                     self.threading.start_new_thread(self.test_collision)
 
+
                 def check_collision(self):
                     if self.map.check_position_coordinates(
                             self.position.simplified_coordinates[0], self.position.simplified_coordinates[1],
@@ -320,7 +321,7 @@ class Command_Line_Python_Space_Simulator():
                         keyboard.unhook_all()
                         os.system('cls')
                         print("You've crashed")
-                        time.sleep(6)
+                        time.sleep(10)
                     time.sleep(0.1)
 
             def __init__(self, map, key_manager, thread_manager):
@@ -346,14 +347,18 @@ class Command_Line_Python_Space_Simulator():
             print('x: %9s  | ' % str(round(self.engine.player.position.detailed_coordinates[1], 3)), end='')
             print('y: %9s  | ' % str(round(self.engine.player.position.detailed_coordinates[2], 3)))
             print('-_-_-Position simplyfied-_-_-')
-            print('z: %9s  | ' % str(round(self.engine.player.position.simplified_coordinates[0], 3)), end='')
-            print('x: %9s  | ' % str(round(self.engine.player.position.simplified_coordinates[1], 3)), end='')
-            print('y: %9s  | ' % str(round(self.engine.player.position.simplified_coordinates[2], 3)))
+            print('z: %9s  | ' % str(self.engine.player.position.simplified_coordinates[0]), end='')
+            print('x: %9s  | ' % str(self.engine.player.position.simplified_coordinates[1]), end='')
+            print('y: %9s  | ' % str(self.engine.player.position.simplified_coordinates[2]))
             print('relative height: ', end='')
             if self.engine.player.position.in_map():
-                print('%11s  |' % str(round((self.engine.player.position.detailed_coordinates[0] - self.engine.map.map.terrain[
-                    self.engine.player.position.simplified_coordinates[1]][
-                    self.engine.player.position.simplified_coordinates[2]] + 1), 3)))
+                if round((self.engine.player.position.detailed_coordinates[0] - self.engine.map.map.terrain[self.engine.player.position.simplified_coordinates[1]][self.engine.player.position.simplified_coordinates[2]] + 1), 3) <= 1:
+                    print('%10s!  |' % str(round((self.engine.player.position.detailed_coordinates[0] - self.engine.map.map.terrain[self.engine.player.position.simplified_coordinates[1]][self.engine.player.position.simplified_coordinates[2]] + 1), 3)))
+                else:
+                    print('%11s  |' % str(round((self.engine.player.position.detailed_coordinates[0] -
+                                                  self.engine.map.map.terrain[
+                                                      self.engine.player.position.simplified_coordinates[1]][
+                                                      self.engine.player.position.simplified_coordinates[2]] + 1), 3)))
             else:
                 print('unavailable  |')
             print('-_-_-Rotation-_-_-')
@@ -402,7 +407,7 @@ class Command_Line_Python_Space_Simulator():
                     self.minimap += '|%4s|' % '#'
                 for column in range(self.engine.player.position.simplified_coordinates[1] - 4,self.engine.player.position.simplified_coordinates[1] + 5):
                     if self.engine.map.check_position_coordinates(0,column,row):
-                        self.minimap += '%4s' % (self.engine.map.map.terrain[row][column] - 1)
+                        self.minimap += '%4s' % (self.engine.map.map.terrain[row][column])
                     else:
                         self.minimap += '%4s' % '?'
 
