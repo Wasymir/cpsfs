@@ -51,7 +51,7 @@ class Command_Line_Python_Space_Simulator():
                     self.map_y_width = y_width
                     self.map_x_width = x_width
                     self.map_z_height = z_height
-                    self.generate_terrain(max_terrain_height, max_terrain_height//2)
+                    self.generate_terrain(max_terrain_height, max_terrain_height // 2)
 
                 def check_position_coordinates(self, z, x, y):
                     if z < 0 or x < 0 or y < 0:
@@ -265,8 +265,12 @@ class Command_Line_Python_Space_Simulator():
                     self.map = map
                     self.movement_engine = movement_engine
                     # todo: tu zmiń po testach
-                    self.detailed_coordinates = [self.map.map.terrain[self.map.map.map_x_width // 2][ self.map.map.map_y_width // 2],self.map.map.map_x_width // 2, self.map.map.map_y_width // 2]
-                    self.simplified_coordinates = [self.map.map.terrain[self.map.map.map_x_width // 2][ self.map.map.map_y_width // 2],self.map.map.map_x_width // 2, self.map.map.map_y_width // 2]
+                    self.detailed_coordinates = [
+                        self.map.map.terrain[self.map.map.map_x_width // 2][self.map.map.map_y_width // 2],
+                        self.map.map.map_x_width // 2, self.map.map.map_y_width // 2]
+                    self.simplified_coordinates = [
+                        self.map.map.terrain[self.map.map.map_x_width // 2][self.map.map.map_y_width // 2],
+                        self.map.map.map_x_width // 2, self.map.map.map_y_width // 2]
                     thread_manager.start_new_thread(self.calculate_current_coordinates)
                     thread_manager.start_new_thread(self.refresh_simplified_coordinates)
 
@@ -304,7 +308,6 @@ class Command_Line_Python_Space_Simulator():
                     self.position = position
                     self.threading.start_new_thread(self.test_collision)
 
-
                 def check_collision(self):
                     if self.map.check_position_coordinates(
                             self.position.simplified_coordinates[0], self.position.simplified_coordinates[1],
@@ -335,101 +338,143 @@ class Command_Line_Python_Space_Simulator():
             self.key_manager = self.Key_manager()
             self.player = self.Space_Ship(self.map, self.key_manager, self.threads_menager)
 
-    class Cli_test_graphic():
-        def __init__(self, engine):
-            self.engine = engine
-            self.engine.threads_menager.start_new_thread(self.print_screen)
+    class Cli_graphic():
+        class Game_view():
+            class Cli_element():
+                def __init__(self):
+                    self.content = []
+                    self.width = 0
+                    self.height = 0
 
-        def print_screen(self):
-            os.system('cls')
-            print('-_-_-Position detailed-_-_-')
-            print('z: %9s  | ' % str(round(self.engine.player.position.detailed_coordinates[0], 3)), end='')
-            print('x: %9s  | ' % str(round(self.engine.player.position.detailed_coordinates[1], 3)), end='')
-            print('y: %9s  | ' % str(round(self.engine.player.position.detailed_coordinates[2], 3)))
-            print('-_-_-Position simplyfied-_-_-')
-            print('z: %9s  | ' % str(self.engine.player.position.simplified_coordinates[0]), end='')
-            print('x: %9s  | ' % str(self.engine.player.position.simplified_coordinates[1]), end='')
-            print('y: %9s  | ' % str(self.engine.player.position.simplified_coordinates[2]))
-            print('relative height: ', end='')
-            if self.engine.player.position.in_map():
-                if round((self.engine.player.position.detailed_coordinates[0] - self.engine.map.map.terrain[self.engine.player.position.simplified_coordinates[1]][self.engine.player.position.simplified_coordinates[2]] + 1), 3) <= 1:
-                    print('%10s!  |' % str(round((self.engine.player.position.detailed_coordinates[0] - self.engine.map.map.terrain[self.engine.player.position.simplified_coordinates[1]][self.engine.player.position.simplified_coordinates[2]] + 1), 3)))
-                else:
-                    print('%11s  |' % str(round((self.engine.player.position.detailed_coordinates[0] -
-                                                  self.engine.map.map.terrain[
-                                                      self.engine.player.position.simplified_coordinates[1]][
-                                                      self.engine.player.position.simplified_coordinates[2]] + 1), 3)))
-            else:
-                print('unavailable  |')
-            print('-_-_-Rotation-_-_-')
-            print('rot z: %5s  | ' % str(round(self.engine.player.movement.lr_rotation, 3)), end='')
-            # print('rot fb: ' + str(round(self.engine.player.movement.fb_rotation, 3)) + '  |  ', end='')
-            print('rot y: %5s  | ' % str(round(self.engine.player.movement.tb_rotation, 3)))
-            print('-_-_-speed-_-_-')
-            print('x: %9s  | ' % str(round(self.engine.player.movement.fb_velocity, 3)), end='')
-            print('z: %9s  | ' % str(round(self.engine.player.movement.tb_velocity, 3)), end='')
-            print('y: %9s  | ' % str(round(self.engine.player.movement.lr_velocity, 3)))
-            print('-_-_-thrust-_-_-')
-            print('tr: ' + str(round(self.engine.player.movement.thrust, 3)) + '  |  ')
-            print('-_-_-map-_-_-')
-            print(self.generte_minimap())
-            print('\n')
+                # <section_name> = [{<id>:<value>,<cells>},... <rows>]
+                def generate_elememn_as_column(self, **kwargs):
+                    def calculate_column_cell_width(**kwargs):
+                        cell_width = max(max(max( (len(str(key)) + len(str(value)) + 5) for key,value in row.items()) for row in content) for section_name,content in kwargs.items())
+                        row_width = max(cell_width * max(max( len(row) for row in content) for section_name,content in kwargs.items()), max(len(str(section_name)) + 1 for section_name, content in kwargs.items()))
+                        return row_width,cell_width
 
-            time.sleep(0.1)
-        def generte_minimap(self):
-            self.minimap = '       '
-            for column in range(self.engine.player.position.simplified_coordinates[1] - 4,self.engine.player.position.simplified_coordinates[1] + 5):
-                if column == self.engine.player.position.simplified_coordinates[1]:
-                    self.minimap += '%4s' % ('_' * len(str(self.engine.player.position.simplified_coordinates[1])))
-                else:
-                    self.minimap += '%4s' % ' '
-            self.minimap += '\n'
-            self.minimap += ''' |x > |'''
-            for column in range(self.engine.player.position.simplified_coordinates[1] - 4,self.engine.player.position.simplified_coordinates[1] + 5):
-                if self.engine.map.check_position_coordinates(0,column,0):
-                    self.minimap += '%4s' % column
-                else:
-                    self.minimap += '%4s' % '#'
-            self.minimap += '\n'
-            self.minimap += ' |y \/|'
-            for column in range(self.engine.player.position.simplified_coordinates[1] - 4,self.engine.player.position.simplified_coordinates[1] + 5):
-                self.minimap += '-' * 4
-            self.minimap += '\n'
-            for row in range(self.engine.player.position.simplified_coordinates[2] - 4,self.engine.player.position.simplified_coordinates[2] + 5):
-                if row == self.engine.player.position.simplified_coordinates[2]:
-                    self.minimap += '|'
-                else:
-                    self.minimap += ' '
+                    self.width, cell_width = calculate_column_cell_width(**kwargs)
+                    for section_name, content in kwargs.items():    
+                        self.content.append(('=%s' % section_name).ljust(self.width - 1,'='))
+                        for row in content:
+                            self.content.append('')
+                            for key,value in row.items():
+                                self.content[-1] += ('%s: ' % key) + ('%s | ' % value).rjust(cell_width - len(key) - 2)
+                        self.content = [line.ljust(self.width) for line in self.content]
+                    self.height = len(self.content)
 
-                if self.engine.map.check_position_coordinates(0,0,row):
-                    self.minimap += '|%4s|' % row
-                else:
-                    self.minimap += '|%4s|' % '#'
-                for column in range(self.engine.player.position.simplified_coordinates[1] - 4,self.engine.player.position.simplified_coordinates[1] + 5):
-                    if self.engine.map.check_position_coordinates(0,column,row):
-                        self.minimap += '%4s' % (self.engine.map.map.terrain[row][column])
+                # <y_id> = [<cells values>]
+                def generate_element_as_map(self, name, x_indexes, **kwargs):
+                    def calculate_column_cell_y_index_width(name, x_indexes, **kwargs):
+                        cell_width = max(
+                            max(len(x_index) for x_index in x_indexes),
+                            max(max(len(str(value)) for value in content) for key, content in kwargs.items())
+                        ) + 1
+                        y_index_width = max(len(str(key)) for key, value in kwargs.items()) + 3
+                        column_width = max(y_index_width + (cell_width * len(x_indexes)), (len(name) + 1))
+                        return column_width, cell_width, y_index_width
+
+                    self.width, cell_width, y_index_width = calculate_column_cell_y_index_width(name, x_indexes,
+                                                                                                **kwargs)
+                    self.content.append('')
+                    self.content[-1] += ('=%s' % name).ljust(self.width, '=')
+                    self.content.append('')
+                    self.content[-1] += (y_index_width) * ' '
+                    for x_index in x_indexes:
+                        self.content[-1] += (' %s ' % x_index).rjust(cell_width)
+                    self.content[-1] = self.content[-1].ljust(self.width)
+                    self.content.append('-' * self.width)
+                    for key, content in kwargs.items():
+                        self.content.append('')
+                        self.content[-1] += ('%s | ' % key).rjust(y_index_width)
+                        for value in content:
+                            self.content[-1] += ('%s ' % value).rjust(cell_width)
+                        self.content[-1] = self.content[-1].ljust(self.width)
+                    self.height = len(self.content)
+
+            def __init__(self, engine):
+                self.position = engine.player.position
+                self.movement = engine.player.movement
+                self.map = engine.map
+                self.data_table = self.Cli_element()
+                self.data_map_terrain = self.Cli_element()
+
+            def render_data_table(self):
+                def calculate_relative_height(position, map):
+                    if position.in_map():
+                        return '%.3f' % round(
+                            position.detailed_coordinates[0] - map.map.terrain[position.simplified_coordinates[1]][
+                                position.simplified_coordinates[2]] + 1, 3)
                     else:
-                        self.minimap += '%4s' % '?'
+                        return '???'
+                self.data_table.content = []
+                self.data_table.generate_elememn_as_column(
+                    S_Position=[
+                        {'z': self.position.simplified_coordinates[0],
+                         'x': self.position.simplified_coordinates[1],
+                         'y': self.position.simplified_coordinates[2]}
+                    ],
+                    D_Position=[
+                        {'z': "%.3f" % round(self.position.detailed_coordinates[0], 3),
+                         'x': "%.3f" % round(self.position.detailed_coordinates[1], 3),
+                         'y': "%.3f" % round(self.position.detailed_coordinates[2], 3)},
+                        {'R.H.': calculate_relative_height(self.position, self.map)}
+                    ],
+                    Rotation=[
+                        {'z': self.position.movement_engine.lr_rotation,
+                         'x': self.position.movement_engine.tb_rotation}
+                    ],
+                    Velocity=[
+                        {'z': "%.1f" % round(self.position.movement_engine.tb_velocity, 1),
+                         'x': "%.1f" % round(self.position.movement_engine.fb_velocity, 1),
+                         'y': "%.1f" % round(self.position.movement_engine.lr_velocity, 1)},
+                        {'tr': self.position.movement_engine.thrust}
+                    ]
+                )
+
+            def render_terrain_map(self):
+                def render_y_index(y):
+                    if self.map.check_position_coordinates[0][0][y]:
+                        return y
+                    else:
+                        return '#'
+                def render_x_index(x):
+                    if self.map.check_position_coordinates[0][x][0]:
+                        return x
+                    else:
+                        return '#'
 
 
-                self.minimap += '\n\n'
+                self.data_map_terrain.generate_element_as_map(
+                    name= 'Terrain_Height_Map',
+                    x_indexes= [render_x_index(index) for index in ]
+
+                )
 
 
 
 
+            def test_print(self):
+                self.render_data_table()
+                os.system('cls')
+                for line in self.data_table.content:
+                    print(line)
+                time.sleep(0.1)
 
-
-            return self.minimap
-
+        def __init__(self, engine):
+            self.game_view = self.Game_view(engine)
 
     def __init__(self):
-        self.engine = self.Engime(100, 100, 50)
-        self.cli_test_graphic = self.Cli_test_graphic(self.engine)
+        self.engine = self.Engime(10, 10, 50)
         self.engine.key_manager.register_hotkey(self.g_exit)
+        self.cli_test_graphic = self.Cli_graphic(self.engine)
+        self.engine.threads_menager.start_new_thread(self.cli_test_graphic.game_view.test_print)
 
     def g_exit(self):
-        self.engine.threads_menager.stop_all()
-        keyboard.unhook_all()
+        pass
+        # self.engine.threads_menager.stop_all()
+        # keyboard.unhook_all()
+
 
 os.system('cls')
 elo = Command_Line_Python_Space_Simulator()
