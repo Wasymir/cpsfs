@@ -122,19 +122,29 @@ class Command_Line_Python_Space_Simulator():
                     self.fb_rotation = 90
                     self.tb_velocity = 0
                     self.fb_velocity = 0
+                    self.fuel = 100
+                    self.threading = thread_manager
                     key_manager.register_hotkey(self.a_l_rotation)
                     key_manager.register_hotkey(self.d_r_rotation)
                     key_manager.register_hotkey(self.w_t_rotation)
                     key_manager.register_hotkey(self.s_b_rotation)
-
                     key_manager.register_hotkey(self.q_trust_up)
                     key_manager.register_hotkey(self.e_trust_down)
                     key_manager.register_hotkey(self.r_landing_engine_up)
                     key_manager.register_hotkey(self.f_landing_engine_down)
                     thread_manager.start_new_thread(self.calculate_current_vectolity)
-                    # thread_manager.start_new_thread(self.stop)
                     key_manager.register_hotkey(self.z_reverse_trust)
-                    # key_manager.register_hotkey(self.x_stop_ship)
+                    thread_manager.start_new_thread(self.calculate_fuel)
+
+                def calculate_fuel(self):
+                    self.fuel -= self.thrust / 300
+                    if self.fuel <= 0:
+                        self.threading.stop_all()
+                        keyboard.unhook_all()
+                        os.system('cls')
+                        print("You've crashed")
+                        time.sleep(10)
+                    time.sleep(0.1)
 
                 def valid_angle(self, angle):
                     if angle >= 360:
@@ -264,7 +274,6 @@ class Command_Line_Python_Space_Simulator():
                 def __init__(self, movement_engine, thread_manager, map):
                     self.map = map
                     self.movement_engine = movement_engine
-                    # todo: tu zmiń po testach
                     self.detailed_coordinates = [
                         self.map.map.terrain[self.map.map.map_x_width // 2][self.map.map.map_y_width // 2],
                         self.map.map.map_x_width // 2, self.map.map.map_y_width // 2]
@@ -340,6 +349,20 @@ class Command_Line_Python_Space_Simulator():
 
     class Cli_graphic():
         class Game_view():
+            class Blinking_light():
+                def __init__(self,threading):
+                    self.on = False
+
+                def switch(self):
+                    self.on = not self.on
+                    time.sleep(0.5)
+
+                def render(self):
+                    if self.on:
+                        return '###'
+                    else:
+                        return '   '
+
             class Cli_element():
                 def __init__(self):
                     self.content = []
@@ -381,22 +404,28 @@ class Command_Line_Python_Space_Simulator():
                         column_width = max(y_index_width + (cell_width * len(x_indexes)), (len(name) + 1))
                         return column_width, cell_width, y_index_width
 
-                    self.width, cell_width, y_index_width = calculate_column_cell_y_index_width(name, x_indexes,**kwargs)
-                    self.content.append(('=%s' % name).ljust(self.width - 1,'='))
-                    self.content.append(' ' * y_index_width + ''.join([('%s ' % x_index).rjust(cell_width) for x_index in x_indexes]))
+                    self.width, cell_width, y_index_width = calculate_column_cell_y_index_width(name, x_indexes,
+                                                                                                **kwargs)
+                    self.content.append(('=%s' % name).ljust(self.width - 1, '='))
+                    self.content.append(
+                        ' ' * y_index_width + ''.join([('%s ' % x_index).rjust(cell_width) for x_index in x_indexes]))
                     self.content.append('-' * (self.width - 1))
-                    self.content.extend([''.join(line) for line in [[('%s | ' % y_index).rjust(y_index_width) + ''.join([('%s ' % value).rjust(cell_width) for value in content])] for y_index,content in kwargs.items()]])
+                    self.content.extend([''.join(line) for line in [[('%s | ' % y_index).rjust(y_index_width) + ''.join(
+                        [('%s ' % value).rjust(cell_width) for value in content])] for y_index, content in
+                                                                    kwargs.items()]])
                     self.refresh_height()
 
-                def generate_element_as_screen(self,*args):
+                def generate_element_as_screen(self, *args):
                     def align_the_width_of_the_elements(*args):
                         for column in args:
                             for element in column:
-                                element.content = [line.ljust(max(ele.width for ele in column)) for line in element.content]
+                                element.content = [line.ljust(max(ele.width for ele in column)) for line in
+                                                   element.content]
 
                     def align_the_height_of_the_columns(*args):
                         for column in args:
-                            while sum(element.height for element in column) < max(sum(element.height for element in column) for column in args):
+                            while sum(element.height for element in column) < max(
+                                    sum(element.height for element in column) for column in args):
                                 column[-1].content.append(' ' * column[-1].width)
                                 for element in column:
                                     element.refresh_height()
@@ -406,12 +435,12 @@ class Command_Line_Python_Space_Simulator():
                     for column in args:
                         if not column == args[-1]:
                             for element in column:
-                                element.content = [''.join([line,'   ||   ']) for line in element.content]
+                                element.content = [''.join([line, '   ||   ']) for line in element.content]
                     contests = [[line for ele in column for line in ele.content] for column in args]
                     self.content = [''.join(elements) for elements in zip(*contests)]
 
-
             def __init__(self, engine):
+                self.blink_light = self.Blinking_light(engine.threads_menager)
                 self.position = engine.player.position
                 self.movement = engine.player.movement
                 self.map = engine.map
@@ -452,6 +481,9 @@ class Command_Line_Python_Space_Simulator():
                          'x': "%.1f" % round(self.position.movement_engine.fb_velocity, 1),
                          'y': "%.1f" % round(self.position.movement_engine.lr_velocity, 1)},
                         {'tr': self.position.movement_engine.thrust}
+                    ],
+                    Fuel= [
+                        {'fl': '%.2f' % round(self.movement.fuel,2)}
                     ]
                 )
 
@@ -470,8 +502,8 @@ class Command_Line_Python_Space_Simulator():
                     else:
                         return '?'
 
-                def render_height(x, y, map,position):
-                    if position.simplified_coordinates[1:] == [x,y]:
+                def render_height(x, y, map, position):
+                    if position.simplified_coordinates[1:] == [x, y]:
                         return '@'
                     if render_x_index(x, map) != '?' and render_y_index(y, map) != '?':
                         return map.map.terrain[x][y] - 1
@@ -483,7 +515,7 @@ class Command_Line_Python_Space_Simulator():
                     x_indexes=[render_x_index(index, self.map) for index in
                                range(self.position.simplified_coordinates[1] - 4,
                                      self.position.simplified_coordinates[1] + 5)],
-                    **{render_y_index(y_index, self.map): [render_height(x_index, y_index, self.map,self.position)
+                    **{render_y_index(y_index, self.map): [render_height(x_index, y_index, self.map, self.position)
                                                            for x_index in
                                                            range(self.position.simplified_coordinates[1] - 4,
                                                                  self.position.simplified_coordinates[1] + 5)]
@@ -512,7 +544,7 @@ class Command_Line_Python_Space_Simulator():
                         return '?'
 
                 def render_cell(z, x, y, map, position):
-                    if position.simplified_coordinates == [z,x,y]:
+                    if position.simplified_coordinates == [z, x, y]:
                         return '@'
                     elif all(resoult != '?' for resoult in (render_y_index(y, map),
                                                             render_x_index(x, map),
@@ -534,14 +566,15 @@ class Command_Line_Python_Space_Simulator():
                         render_cell(z_index, x_index, self.position.simplified_coordinates[2], self.map, self.position)
                         for x_index in
                         range(self.position.simplified_coordinates[1] - 4, self.position.simplified_coordinates[1] + 5)]
-                       for z_index in
-                       range(self.position.simplified_coordinates[0] + 2, self.position.simplified_coordinates[0] - 3, -1)}
+                        for z_index in
+                        range(self.position.simplified_coordinates[0] + 2, self.position.simplified_coordinates[0] - 3,
+                              -1)}
                 )
 
             def render_graphic_2d_map_y(self):
                 self.graphic_2d_map_y.content.clear()
 
-                def render_z_index(z,map):
+                def render_z_index(z, map):
                     if map.check_position_coordinates(z, 0, 0):
                         return str(z)
                     else:
@@ -560,7 +593,7 @@ class Command_Line_Python_Space_Simulator():
                         return '?'
 
                 def render_cell(z, x, y, map, position):
-                    if position.simplified_coordinates == [z,x,y]:
+                    if position.simplified_coordinates == [z, x, y]:
                         return '@'
                     elif all(resoult != '?' for resoult in (render_y_index(y, map),
                                                             render_x_index(x, map),
@@ -579,16 +612,15 @@ class Command_Line_Python_Space_Simulator():
                                range(self.position.simplified_coordinates[2] - 4,
                                      self.position.simplified_coordinates[2] + 5)],
                     **{render_z_index(z_index, self.map): [
-                        render_cell(z_index,self.position.simplified_coordinates[1], y_index, self.map, self.position)
+                        render_cell(z_index, self.position.simplified_coordinates[1], y_index, self.map, self.position)
                         for y_index in
                         range(self.position.simplified_coordinates[2] - 4, self.position.simplified_coordinates[2] + 5)]
-                       for z_index in
-                       range(self.position.simplified_coordinates[0] + 2, self.position.simplified_coordinates[0] - 3, -1)}
+                        for z_index in
+                        range(self.position.simplified_coordinates[0] + 2, self.position.simplified_coordinates[0] - 3,
+                              -1)}
                 )
 
-
-                self.graphic_2d_map_y.content.insert(0,' ' * self.graphic_2d_map_y.width)
-
+                self.graphic_2d_map_y.content.insert(0, ' ' * self.graphic_2d_map_y.width)
 
             def render_screen(self):
                 self.screen.content.clear()
