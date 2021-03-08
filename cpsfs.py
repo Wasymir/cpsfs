@@ -436,7 +436,7 @@ class Console_Python_Space_Flight_Simulator():
                     for column in args:
                         if not column == args[-1]:
                             for element in column:
-                                element.content = [''.join([line, '   ||   ']) for line in element.content]
+                                element.content = [''.join([line, '  ||  ']) for line in element.content]
                     contests = [[line for ele in column for line in ele.content] for column in args]
                     self.content = [''.join(elements) for elements in zip(*contests)]
                     self.content.insert(0,'=Python_Console_Space_Flight_Simulator'.ljust(len(self.content[0]) - 1,'='))
@@ -677,3 +677,7 @@ class Console_Python_Space_Flight_Simulator():
 
 os.system('cls')
 elo = Console_Python_Space_Flight_Simulator()
+# 1# todo: baza i refuel
+# 2# todo: minerały i wydobycie + sprzedrz w bazie + płatny refuel
+# 3# todo: więciej niż 1 baza
+# 4# todo: tutorial
