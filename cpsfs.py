@@ -6,7 +6,7 @@ import random
 import math
 
 
-class Command_Line_Python_Space_Simulator():
+class Console_Python_Space_Flight_Simulator():
     class Engime():
         class Threads_menager():
             class Thread():
@@ -122,7 +122,7 @@ class Command_Line_Python_Space_Simulator():
                     self.fb_rotation = 90
                     self.tb_velocity = 0
                     self.fb_velocity = 0
-                    self.fuel = 100
+                    self.fuel = 500
                     self.threading = thread_manager
                     key_manager.register_hotkey(self.a_l_rotation)
                     key_manager.register_hotkey(self.d_r_rotation)
@@ -142,7 +142,7 @@ class Command_Line_Python_Space_Simulator():
                         self.threading.stop_all()
                         keyboard.unhook_all()
                         os.system('cls')
-                        print("You've crashed")
+                        print("No Fuel")
                         time.sleep(10)
                     time.sleep(0.1)
 
@@ -352,6 +352,7 @@ class Command_Line_Python_Space_Simulator():
             class Blinking_light():
                 def __init__(self,threading):
                     self.on = False
+                    threading.start_new_thread(self.switch)
 
                 def switch(self):
                     self.on = not self.on
@@ -438,6 +439,7 @@ class Command_Line_Python_Space_Simulator():
                                 element.content = [''.join([line, '   ||   ']) for line in element.content]
                     contests = [[line for ele in column for line in ele.content] for column in args]
                     self.content = [''.join(elements) for elements in zip(*contests)]
+                    self.content.insert(0,'=Python_Console_Space_Flight_Simulator'.ljust(len(self.content[0]) - 1,'='))
 
             def __init__(self, engine):
                 self.blink_light = self.Blinking_light(engine.threads_menager)
@@ -455,9 +457,25 @@ class Command_Line_Python_Space_Simulator():
                     if position.in_map():
                         return '%.3f' % round(
                             position.detailed_coordinates[0] - map.map.terrain[position.simplified_coordinates[1]][
-                                position.simplified_coordinates[2]] + 1, 3)
+                                position.simplified_coordinates[2]], 3)
                     else:
                         return '???'
+                def render_relative_height_warning(position,map,blink_light):
+                    if position.in_map():
+                        if position.detailed_coordinates[0] - map.map.terrain[position.simplified_coordinates[1]][
+                                position.simplified_coordinates[2]] < 1:
+                            return blink_light.render()
+                        else:
+                            return '   '
+                    else:
+                        return '   '
+
+                def render_fuel_level_warning(movement,blink_light):
+                    if movement.fuel < 50:
+                        return blink_light.render()
+                    else:
+                        return '   '
+
 
                 self.data_table.content.clear()
                 self.data_table.generate_elememn_as_column(
@@ -470,7 +488,7 @@ class Command_Line_Python_Space_Simulator():
                         {'z': "%.3f" % round(self.position.detailed_coordinates[0], 3),
                          'x': "%.3f" % round(self.position.detailed_coordinates[1], 3),
                          'y': "%.3f" % round(self.position.detailed_coordinates[2], 3)},
-                        {'R.H.': calculate_relative_height(self.position, self.map)}
+                        {'rh': calculate_relative_height(self.position, self.map),'R.H.W':render_relative_height_warning(self.position,self.map,self.blink_light)}
                     ],
                     Rotation=[
                         {'z': self.position.movement_engine.lr_rotation,
@@ -483,7 +501,7 @@ class Command_Line_Python_Space_Simulator():
                         {'tr': self.position.movement_engine.thrust}
                     ],
                     Fuel= [
-                        {'fl': '%.2f' % round(self.movement.fuel,2)}
+                        {'fl': '%.2f' % round(self.movement.fuel,2),'F.L.W':render_fuel_level_warning(self.movement,self.blink_light)}
                     ]
                 )
 
@@ -653,9 +671,9 @@ class Command_Line_Python_Space_Simulator():
 
     def g_exit(self):
         pass
-        # self.engine.threads_menager.stop_all()
-        # keyboard.unhook_all()
+        self.engine.threads_menager.stop_all()
+        keyboard.unhook_all()
 
 
 os.system('cls')
-elo = Command_Line_Python_Space_Simulator()
+elo = Console_Python_Space_Flight_Simulator()
