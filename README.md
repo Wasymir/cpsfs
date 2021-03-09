@@ -3,9 +3,9 @@
 ___
 ___
 ### 0. Table of Contents
-- [1. UI Explanation](https://github.com/Wasymir/clpss#1.-ui-explanation)
-- [2. Key Binding](https://github.com/Wasymir/clpss#key-binding)
-- [3. Installation tutorial for non-technical people](https://github.com/Wasymir/cpsfs#installation-tutorial-for-non-technical-people)
+- [1. UI Explanation](https://github.com/Wasymir/cpsfs#1-ui-explanation)
+- [2. Key Binding](https://github.com/Wasymir/cpsfs#2-key-binding)
+- [3. Installation tutorial for non-technical people](https://github.com/Wasymir/cpsfs#3-installation-tutorial-for-non-technical-people)
 ___
 ___
 ## 1. Ui Explanation
