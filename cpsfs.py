@@ -520,10 +520,15 @@ class Console_Python_Space_Flight_Simulator():
                     else:
                         return '?'
 
-                def render_height(x, y, map, position):
+                def render_height(z,x, y, map, position,blink_light):
                     if position.simplified_coordinates[1:] == [x, y]:
                         return '@'
                     if render_x_index(x, map) != '?' and render_y_index(y, map) != '?':
+                        if map.map.terrain[x][y] - 1 > z:
+                            if blink_light.on:
+                                return '!'.rjust(len(str(map.map.terrain[x][y] - 1)))
+                            else:
+                                return map.map.terrain[x][y] - 1
                         return map.map.terrain[x][y] - 1
                     else:
                         return '#'
@@ -533,7 +538,7 @@ class Console_Python_Space_Flight_Simulator():
                     x_indexes=[render_x_index(index, self.map) for index in
                                range(self.position.simplified_coordinates[1] - 4,
                                      self.position.simplified_coordinates[1] + 5)],
-                    **{render_y_index(y_index, self.map): [render_height(x_index, y_index, self.map, self.position)
+                    **{render_y_index(y_index, self.map): [render_height(self.position.simplified_coordinates[0],x_index, y_index, self.map, self.position,self.blink_light)
                                                            for x_index in
                                                            range(self.position.simplified_coordinates[1] - 4,
                                                                  self.position.simplified_coordinates[1] + 5)]
@@ -679,5 +684,6 @@ os.system('cls')
 elo = Console_Python_Space_Flight_Simulator()
 # 1# todo: baza i refuel
 # 2# todo: minerały i wydobycie + sprzedrz w bazie + płatny refuel
-# 3# todo: więciej niż 1 baza
-# 4# todo: tutorial
+# 3# todo: tutorial I menu
+#  todo: więciej niż 1 baza
+# 4#
