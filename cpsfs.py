@@ -432,7 +432,7 @@ class Console_Python_Space_Flight_Simulator():
                     contests = [[line for ele in column for line in ele.content] for column in args]
                     self.content = [''.join(elements) for elements in zip(*contests)]
                     self.content.insert(0,(('=%s' % name).ljust(len(self.content[0]) - 1,'=')) + ' ')
-                    self.content.append('=' * len(self.content[0]))
+                    self.content.append('=' * (len(self.content[0]) - 1) + ' ')
                     self.content = [('||' + line + '||').center(os.get_terminal_size()[0]) for line in self.content]
 
             def __init__(self, engine):
