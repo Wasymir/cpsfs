@@ -5,7 +5,7 @@ ___
 ### Table of Contents
 - [UI Explanation](https://github.com/Wasymir/clpss#ui-explanation)
 - [Key Binding](https://github.com/Wasymir/clpss#key-binding)
-- [Installation tutorial for non-technical people](https://github.com/Wasymir/clpss#instalation-tutorial-for-non-technical-people)
+- [Installation tutorial for non-technical people](https://github.com/Wasymir/cpsfs#installation-tutorial-for-non-technical-people)
 ___
 ___
 ## Ui Explanation
