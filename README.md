@@ -18,9 +18,9 @@ Is used to define a simplified position on the map, useful for navigation on map
 ___
 | property      | Description |
 | :---        |    :----:   |
-| z      | z axis integreter position       | 
-| x   | x axis integreter position        | 
-| y   | y axis integreter position       | 
+| z      | z axis integer position       | 
+| x   | x axis integer position        | 
+| y   | y axis integer position       | 
 ___
 ___
 ### D_Position -> Detailed Position
@@ -47,15 +47,15 @@ ___
 ___
 1. picture
 
-![Rotzimage](img/rotzpic.png)
+![Angle z image](img/rotzpic.png)
 ___
 2. picture
 
-![Rotzimage](img/rozxpic.png)
+![Angle z image](img/rozxpic.png)
 ___
 ___
 ### Velocity
-Is used to define a movment speed at every axis and engine thrust.
+Is used to define a movement speed at every axis and engine thrust.
 ___
 | property      | Description |
 | :---        |    :----:   |
@@ -74,7 +74,7 @@ ___
 | F.L.W   | Fuel Level Warning - starts blinking if fl < 50 |
 ___
 ___
-### Terain Height map
+### Terrain Height map
 Used for navigation and determination of altitude on a given map block.
 ___
 ![terrain map pic](img/terrainmappic.png)
@@ -84,7 +84,7 @@ ___
 | number      | terrain height       | 
 | !   | block of the map that you can crash into        | 
 | @   | your ship       | 
-| #   | block outsite of map       |
+| #   | block outside of map       |
 ___
 ___
 ### X_axis_AGSS -> X axis Advanced Graphic Surface Scanner
@@ -97,7 +97,7 @@ ___
 | *      | empty map block       | 
 | X   | filled map block        | 
 | @   | your ship       | 
-| #   | block outsite of map       |
+| #   | block outside of map       |
 ___
 ___
 ### Y_axis_AGSS -> Y axis Advanced Graphic Surface Scanner
@@ -110,7 +110,7 @@ ___
 | *      | empty map block       | 
 | X   | filled map block        | 
 | @   | your ship       | 
-| #   | block outsite of map       |
+| #   | block outside of map       |
 ___
 ___
 ## Key Binding
@@ -123,26 +123,26 @@ ___
 |   d   |    Yaw right (raises z axis rotation)   | 
 |  q    |    Thrust up  (raises thrust)  | 
 |  e    |    Thrust Down (decrease thrust)   | 
-|  z    |   Thrust Emargency Brake (sets thrust to 0)    | 
+|  z    |   Thrust Emergency Brake (sets thrust to 0)    | 
 |  r    |  Landing Engines up (raises z axis movement velocity)     | 
 |  f    |  Landing Engines down (decrease z axis movement velocity)    | 
 |  g    |  quit     | 
 ___
 ___
-## Instalation tutorial for non-technical people
+## Installation tutorial for non-technical people
 ___
 1. Download zip with repository by clicking 'Code' button and then 'download zip'
 ![buttons to click](img/downloadtutorial.png)
    
-2. Unzip downloaded file.
+2. Unzip the downloaded file.
 3. Now you can delete Read.md file and Img directory.
 4. if you don't have python, install it. According to this [tutorial](https://www.youtube.com/watch?v=IDo_Gsv3KVk).
 5. Install required libraries
-    - Open Comand Line, if you don't know how use this [tutorial](https://www.howtogeek.com/235101/10-ways-to-open-the-command-prompt-in-windows-10/#:~:text=Press%20Windows%2BR%20to%20open,open%20an%20administrator%20Command%20Prompt.).
+    - Open Command Line, if you don't know how use this [tutorial](https://www.howtogeek.com/235101/10-ways-to-open-the-command-prompt-in-windows-10/#:~:text=Press%20Windows%2BR%20to%20open,open%20an%20administrator%20Command%20Prompt.).
     - Run this command, remember to replace ().
-        >pip install -r (path to requirments.txt file)
+        >pip install -r (path to requirements.txt file)
       > 
-6. If you are using windows run 'run.cmd' file, but if you are using linux or Mac OS compile cpsfs to bytecodes first and then just run with python compiled file. You can do it by doing this [tutorial](https://www.geeksforgeeks.org/generate-byte-code-file-python/) and running this command, remember to replace (). 
+6. If you are using windows run 'run.cmd' file, but if you are using linux or macOS compile cpsfs to bytecodes first and then just run with python compiled file. You can do it by doing this [tutorial](https://www.geeksforgeeks.org/generate-byte-code-file-python/) and running this command, remember to replace (). 
     > python (path to complied file)
    
 
