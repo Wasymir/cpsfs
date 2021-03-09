@@ -2,13 +2,13 @@
 # Command_Line_Python_Space_Simulator
 ___
 ___
-### Table of Contents
-- [UI Explanation](https://github.com/Wasymir/clpss#ui-explanation)
-- [Key Binding](https://github.com/Wasymir/clpss#key-binding)
-- [Installation tutorial for non-technical people](https://github.com/Wasymir/cpsfs#installation-tutorial-for-non-technical-people)
+### 0. Table of Contents
+- [1. UI Explanation](https://github.com/Wasymir/clpss#1.-ui-explanation)
+- [2. Key Binding](https://github.com/Wasymir/clpss#key-binding)
+- [3. Installation tutorial for non-technical people](https://github.com/Wasymir/cpsfs#installation-tutorial-for-non-technical-people)
 ___
 ___
-## Ui Explanation
+## 1. Ui Explanation
 ___
 ![UI Image](img/ui_screen.png)
 ___
@@ -113,7 +113,7 @@ ___
 | #   | block outside of map       |
 ___
 ___
-## Key Binding
+## 2. Key Binding
 ___
 | key      | function |
 | :---        |    :----:   |
@@ -129,7 +129,7 @@ ___
 |  g    |  quit     | 
 ___
 ___
-## Installation tutorial for non-technical people
+## 3. Installation tutorial for non-technical people
 ___
 1. Download zip with repository by clicking 'Code' button and then 'download zip'
 ![buttons to click](img/downloadtutorial.png)
