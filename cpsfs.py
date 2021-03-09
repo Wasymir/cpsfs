@@ -676,6 +676,6 @@ os.system('cls')
 elo = Console_Python_Space_Flight_Simulator()
 # 1# todo: baza i refuel
 # 2# todo: minerały i wydobycie + sprzedrz w bazie + płatny refuel
-# 3# todo: tutorial I menu
+# 3# todo:  menu
 #  todo: więciej niż 1 baza
 # 4#

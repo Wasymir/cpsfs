@@ -5,7 +5,7 @@ ___
 ### Table of Contents
 - [UI Explanation](https://github.com/Wasymir/clpss#ui-explanation)
 - [Key Binding](https://github.com/Wasymir/clpss#key-binding)
-- [Installation Tutorial for non-technical people](https://github.com/Wasymir/clpss#instalation-tutorial-for-non-technical-people)
+- [Installation tutorial for non-technical people](https://github.com/Wasymir/clpss#instalation-tutorial-for-non-technical-people)
 ___
 ___
 ## Ui Explanation
@@ -32,8 +32,8 @@ ___
 | x   | x axis float position        | 
 | y   | y axis float position       | 
 | rh   | relative height       | 
-| R.H.W   | relative height warning - starts blinking if rh < 1
-|
+| R.H.W   | relative height warning - starts blinking if rh < 1|
+
 ___
 ___
 ### Rotation
