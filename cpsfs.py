@@ -408,7 +408,7 @@ class Console_Python_Space_Flight_Simulator():
                                                                     kwargs.items()]])
                     self.refresh_height()
 
-                def generate_element_as_screen(self, *args):
+                def generate_element_as_screen(self,name, *args):
                     def align_the_width_of_the_elements(*args):
                         for column in args:
                             for element in column:
@@ -431,7 +431,9 @@ class Console_Python_Space_Flight_Simulator():
                                 element.content = [''.join([line, '  ||  ']) for line in element.content]
                     contests = [[line for ele in column for line in ele.content] for column in args]
                     self.content = [''.join(elements) for elements in zip(*contests)]
-                    self.content.insert(0,'=Python_Console_Space_Flight_Simulator'.ljust(len(self.content[0]) - 1,'='))
+                    self.content.insert(0,(('=%s' % name).ljust(len(self.content[0]) - 1,'=')) + ' ')
+                    self.content.append('=' * len(self.content[0]))
+                    self.content = [('||' + line + '||').center(os.get_terminal_size()[0]) for line in self.content]
 
             def __init__(self, engine):
                 self.blink_light = self.Blinking_light(engine.threads_menager)
@@ -644,6 +646,7 @@ class Console_Python_Space_Flight_Simulator():
                 self.render_data_table()
                 self.render_terrain_map()
                 self.screen.generate_element_as_screen(
+                    'Console_Python_Space_Flight_Simulator',
                     [self.data_table,
                      self.data_map_terrain],
                     [self.graphic_2d_map_x,
@@ -674,6 +677,7 @@ class Console_Python_Space_Flight_Simulator():
 
 os.system('cls')
 elo = Console_Python_Space_Flight_Simulator()
+#  todo: wycentruj w konsoli!!!!
 # 1# todo: baza i refuel
 # 2# todo: minerały i wydobycie + sprzedrz w bazie + płatny refuel
 # 3# todo:  menu
