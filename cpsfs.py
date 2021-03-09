@@ -133,11 +133,11 @@ class Console_Python_Space_Flight_Simulator():
                     key_manager.register_hotkey(self.r_landing_engine_up)
                     key_manager.register_hotkey(self.f_landing_engine_down)
                     thread_manager.start_new_thread(self.calculate_current_vectolity)
-                    key_manager.register_hotkey(self.z_reverse_trust)
+                    key_manager.register_hotkey(self.z_energency_trust_brake)
                     thread_manager.start_new_thread(self.calculate_fuel)
 
                 def calculate_fuel(self):
-                    self.fuel -= self.thrust / 300
+                    self.fuel -= abs(self.thrust) / 300
                     if self.fuel <= 0:
                         self.threading.stop_all()
                         keyboard.unhook_all()
@@ -155,20 +155,13 @@ class Console_Python_Space_Flight_Simulator():
                         return angle
 
                 def valid_trust(self, trust):
-                    if self.reverse_thrust:
                         if trust < -100:
                             return -100
-                        elif trust > 0:
-                            return 0
-                        else:
-                            return trust
-                    else:
-                        if trust > 100:
+                        elif trust > 100:
                             return 100
-                        elif trust < 0:
-                            return 0
                         else:
                             return trust
+
 
                 def calculate_angle_factor(self, angle):
                     if angle < 90:
@@ -242,9 +235,8 @@ class Console_Python_Space_Flight_Simulator():
                     self.tb_velocity = self.valid_trust(self.tb_velocity - 0.2)
                     # time.sleep(0.2)
 
-                def z_reverse_trust(self):
+                def z_energency_trust_brake(self):
                     self.thrust = 0
-                    self.reverse_thrust = not self.reverse_thrust
 
                 def calculate_velocity_delta(self):
                     def calculate_delta(angle_factor, thrust):
