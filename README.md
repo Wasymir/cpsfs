@@ -1,6 +1,13 @@
 
 # Command_Line_Python_Space_Simulator
 ___
+___
+### Table of Contents
+- [UI Explanation](https://github.com/Wasymir/clpss#ui-explanation)
+- [Key Binding](https://github.com/Wasymir/clpss#key-binding)
+- [Installation Tutorial for non-technical people](https://github.com/Wasymir/clpss#instalation-tutorial-for-non-technical-people)
+___
+___
 ## Ui Explanation
 ___
 ![UI Image](img/ui_screen.png)
