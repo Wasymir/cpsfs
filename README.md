@@ -122,5 +122,23 @@ ___
 |  g    |  quit     | 
 ___
 ___
- 
+## Instalation tutorial for non-technical people
+___
+1. Download zip with repository by clicking 'Code' button and then 'download zip'
+![buttons to click](img/downloadtutorial.png)
+   
+2. Unzip downloaded file.
+3. Now you can delete Read.md file and Img directory.
+4. if you don't have python, install it. According to this [tutorial](https://www.youtube.com/watch?v=IDo_Gsv3KVk).
+5. Install required libraries
+    - Open Comand Line, if you don't know how use this [tutorial](https://www.howtogeek.com/235101/10-ways-to-open-the-command-prompt-in-windows-10/#:~:text=Press%20Windows%2BR%20to%20open,open%20an%20administrator%20Command%20Prompt.).
+    - Run this command, remember to replace ().
+        >pip install -r (path to requirments.txt file)
+      > 
+6. If you are using windows run 'run.cmd' file, but if you are using linux or Mac OS compile cpsfs to bytecodes first and then just run with python compiled file. You can do it by doing this [tutorial](https://www.geeksforgeeks.org/generate-byte-code-file-python/) and running this command, remember to replace (). 
+    > python (path to complied file)
+   
+
+
+
 
