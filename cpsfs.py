@@ -433,7 +433,11 @@ class Console_Python_Space_Flight_Simulator():
                     self.content = [''.join(elements) for elements in zip(*contests)]
                     self.content.insert(0,(('=%s' % name).ljust(len(self.content[0]) - 1,'=')) + ' ')
                     self.content.append('=' * (len(self.content[0]) - 1) + ' ')
-                    self.content = [('||' + line + '||').center(os.get_terminal_size()[0]) for line in self.content]
+                    if len(self.content[0]) + 4 > os.get_terminal_size()[0]:
+                        self.content = ["Make terminal window wider!!!".center(os.get_terminal_size()[0])]
+                    else:
+                        self.content = [('||' + line + '||').center(os.get_terminal_size()[0]) for line in self.content]
+
 
             def __init__(self, engine):
                 self.blink_light = self.Blinking_light(engine.threads_menager)
