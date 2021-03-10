@@ -7,8 +7,8 @@ import math
 
 
 class Console_Python_Space_Flight_Simulator():
-    class Engime():
-        class Threads_menager():
+    class Engine():
+        class Threads_manager():
             class Thread():
                 def __init__(self, function):
                     self.running = True
@@ -132,8 +132,8 @@ class Console_Python_Space_Flight_Simulator():
                     key_manager.register_hotkey(self.e_trust_down)
                     key_manager.register_hotkey(self.r_landing_engine_up)
                     key_manager.register_hotkey(self.f_landing_engine_down)
-                    thread_manager.start_new_thread(self.calculate_current_vectolity)
-                    key_manager.register_hotkey(self.x_energency_trust_brake)
+                    thread_manager.start_new_thread(self.calculate_current_velocity)
+                    key_manager.register_hotkey(self.x_emergency_trust_brake)
                     key_manager.register_hotkey(self.z_thrust_max)
                     key_manager.register_hotkey(self.c_thrust_min)
                     thread_manager.start_new_thread(self.calculate_fuel)
@@ -237,7 +237,7 @@ class Console_Python_Space_Flight_Simulator():
                     self.tb_velocity = self.valid_trust(self.tb_velocity - 0.2)
                     # time.sleep(0.2)
 
-                def x_energency_trust_brake(self):
+                def x_emergency_trust_brake(self):
                     self.thrust = 0
 
                 def z_thrust_max(self):
@@ -256,18 +256,18 @@ class Console_Python_Space_Flight_Simulator():
                         'fb': calculate_delta(self.calculate_angle_factor(self.fb_rotation), self.thrust)
                     }
 
-                def validate_vectolity(self, vectolity):
-                    if vectolity > 750:
+                def validate_velocity(self, velocity):
+                    if velocity > 750:
                         return 750
-                    elif vectolity < -750:
+                    elif velocity < -750:
                         return - 750
                     else:
-                        return vectolity
+                        return velocity
 
-                def calculate_current_vectolity(self):
-                    self.tb_velocity = self.validate_vectolity(self.calculate_velocity_delta()['tb'] + self.tb_velocity)
-                    self.lr_velocity = self.validate_vectolity(self.calculate_velocity_delta()['lr'] + self.lr_velocity)
-                    self.fb_velocity = self.validate_vectolity(self.calculate_velocity_delta()['fb'] + self.fb_velocity)
+                def calculate_current_velocity(self):
+                    self.tb_velocity = self.validate_velocity(self.calculate_velocity_delta()['tb'] + self.tb_velocity)
+                    self.lr_velocity = self.validate_velocity(self.calculate_velocity_delta()['lr'] + self.lr_velocity)
+                    self.fb_velocity = self.validate_velocity(self.calculate_velocity_delta()['fb'] + self.fb_velocity)
                     time.sleep(0.1)
 
             class Position():
@@ -341,11 +341,11 @@ class Console_Python_Space_Flight_Simulator():
                 self.position = self.Position(self.movement, thread_manager, map)
                 self.collision = self.Collision(thread_manager, map, self.position)
 
-        def __init__(self, map_width, map_lenght, map_height):
-            self.map = self.Game_Map(map_height, map_lenght, map_width)
-            self.threads_menager = self.Threads_menager()
+        def __init__(self, map_width, map_length, map_height):
+            self.map = self.Game_Map(map_height, map_length, map_width)
+            self.threads_manager = self.Threads_manager()
             self.key_manager = self.Key_manager()
-            self.player = self.Space_Ship(self.map, self.key_manager, self.threads_menager)
+            self.player = self.Space_Ship(self.map, self.key_manager, self.threads_manager)
 
     class Cli_graphic():
         class Game_view():
@@ -374,7 +374,7 @@ class Console_Python_Space_Flight_Simulator():
                     self.height = len(self.content)
 
                 # <section_name> = [{<id>:<value>,<cells>},... <rows>]
-                def generate_elememn_as_column(self, **kwargs):
+                def generate_element_as_column(self, **kwargs):
                     def calculate_column_cell_width(**kwargs):
                         cell_width = max(max(
                             max((len(str(key)) + len(str(value)) + 5) for key, value in row.items()) for row in content)
@@ -448,7 +448,7 @@ class Console_Python_Space_Flight_Simulator():
 
 
             def __init__(self, engine):
-                self.blink_light = self.Blinking_light(engine.threads_menager)
+                self.blink_light = self.Blinking_light(engine.threads_manager)
                 self.position = engine.player.position
                 self.movement = engine.player.movement
                 self.map = engine.map
@@ -484,7 +484,7 @@ class Console_Python_Space_Flight_Simulator():
 
 
                 self.data_table.content.clear()
-                self.data_table.generate_elememn_as_column(
+                self.data_table.generate_element_as_column(
                     S_Position=[
                         {'z': self.position.simplified_coordinates[0],
                          'x': self.position.simplified_coordinates[1],
@@ -575,7 +575,7 @@ class Console_Python_Space_Flight_Simulator():
                 def render_cell(z, x, y, map, position):
                     if position.simplified_coordinates == [z, x, y]:
                         return '@'
-                    elif all(resoult != '?' for resoult in (render_y_index(y, map),
+                    elif all(result != '?' for result in (render_y_index(y, map),
                                                             render_x_index(x, map),
                                                             render_z_index(z, map))):
                         if map.is_not_space(z, x, y):
@@ -624,7 +624,7 @@ class Console_Python_Space_Flight_Simulator():
                 def render_cell(z, x, y, map, position):
                     if position.simplified_coordinates == [z, x, y]:
                         return '@'
-                    elif all(resoult != '?' for resoult in (render_y_index(y, map),
+                    elif all(result != '?' for result in (render_y_index(y, map),
                                                             render_x_index(x, map),
                                                             render_z_index(z, map))):
                         if map.is_not_space(z, x, y):
@@ -676,20 +676,20 @@ class Console_Python_Space_Flight_Simulator():
             self.game_view = self.Game_view(engine)
 
     def __init__(self):
-        self.engine = self.Engime(100, 100, 50)
+        self.engine = self.Engine(100, 100, 50)
         self.engine.key_manager.register_hotkey(self.g_exit)
         self.cli_test_graphic = self.Cli_graphic(self.engine)
-        self.engine.threads_menager.start_new_thread(self.cli_test_graphic.game_view.test_print)
+        self.engine.threads_manager.start_new_thread(self.cli_test_graphic.game_view.test_print)
 
     def g_exit(self):
         pass
-        self.engine.threads_menager.stop_all()
+        self.engine.threads_manager.stop_all()
         keyboard.unhook_all()
 
 
 os.system('cls')
-elo = Console_Python_Space_Flight_Simulator()
-#  todo: wycentruj w konsoli!!!!
+game = Console_Python_Space_Flight_Simulator()
+
 # 1# todo: baza i refuel
 # 2# todo: minerały i wydobycie + sprzedrz w bazie + płatny refuel
 # 3# todo:  menu
