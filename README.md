@@ -123,7 +123,9 @@ ___
 |   d   |    Yaw right (raises z axis rotation)   | 
 |  q    |    Thrust up  (raises thrust)  | 
 |  e    |    Thrust Down (decrease thrust)   | 
-|  z    |   Thrust Emergency Brake (sets thrust to 0)    | 
+|  x    |   Thrust Emergency Brake (sets thrust to 0)    | 
+|  z    |   Thrust Max (sets thrust to 100)    | 
+|  c    |   Thrust Min (sets thrust to -100)    | 
 |  r    |  Landing Engines up (raises z axis movement velocity)     | 
 |  f    |  Landing Engines down (decrease z axis movement velocity)    | 
 |  g    |  quit     | 

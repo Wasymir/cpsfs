@@ -133,7 +133,9 @@ class Console_Python_Space_Flight_Simulator():
                     key_manager.register_hotkey(self.r_landing_engine_up)
                     key_manager.register_hotkey(self.f_landing_engine_down)
                     thread_manager.start_new_thread(self.calculate_current_vectolity)
-                    key_manager.register_hotkey(self.z_energency_trust_brake)
+                    key_manager.register_hotkey(self.x_energency_trust_brake)
+                    key_manager.register_hotkey(self.z_thrust_max)
+                    key_manager.register_hotkey(self.c_thrust_min)
                     thread_manager.start_new_thread(self.calculate_fuel)
 
                 def calculate_fuel(self):
@@ -235,8 +237,14 @@ class Console_Python_Space_Flight_Simulator():
                     self.tb_velocity = self.valid_trust(self.tb_velocity - 0.2)
                     # time.sleep(0.2)
 
-                def z_energency_trust_brake(self):
+                def x_energency_trust_brake(self):
                     self.thrust = 0
+
+                def z_thrust_max(self):
+                    self.thrust = 100
+
+                def c_thrust_min(self):
+                    self.thrust = -100
 
                 def calculate_velocity_delta(self):
                     def calculate_delta(angle_factor, thrust):
