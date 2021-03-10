@@ -131,11 +131,13 @@ ___
 ___
 ## 3. Installation tutorial for non-technical people
 ___
-1. Download zip with repository by clicking 'Code' button and then 'download zip'
-![buttons to click](img/downloadtutorial.png)
-   
-2. Unzip the downloaded file.
-3. Now you can delete Read.md file and Img directory.
+1. Download and install [Github Desktop](https://desktop.github.com/)
+2. Clone Repository to your computer:
+   - Open Github Desktop.
+   - Click 'Clone repository from the Internet...' button.
+   - Select 'Url' option
+   - Paste link to this repository and choose download dir.
+3 If you want to get the current version of repository just select pull option from Repository tab.   
 4. If you don't have python, install it. According to this [tutorial](https://www.youtube.com/watch?v=IDo_Gsv3KVk).
 5. Install required libraries
     - Open Command Line, if you don't know how use this [tutorial](https://www.howtogeek.com/235101/10-ways-to-open-the-command-prompt-in-windows-10/#:~:text=Press%20Windows%2BR%20to%20open,open%20an%20administrator%20Command%20Prompt.).
