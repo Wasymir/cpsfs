@@ -134,20 +134,20 @@ ___
 ## 3. Installation tutorial for non-technical people
 ___
 1. Download and install [Github Desktop](https://desktop.github.com/)
+
 2. Clone Repository to your computer:
    - Open Github Desktop.
    - Click 'Clone repository from the Internet...' button.
    - Select 'Url' option
    - Paste link to this repository and choose download dir.
-3 If you want to get the current version of repository just select pull option from Repository tab.   
+   
+3. If you want to get the current version of repository just select pull option from Repository tab.
 4. If you don't have python, install it. According to this [tutorial](https://www.youtube.com/watch?v=IDo_Gsv3KVk).
-5. Install required libraries
-    - Open Command Line, if you don't know how use this [tutorial](https://www.howtogeek.com/235101/10-ways-to-open-the-command-prompt-in-windows-10/#:~:text=Press%20Windows%2BR%20to%20open,open%20an%20administrator%20Command%20Prompt.).
-    - Run this command, remember to replace ().
-        >pip install -r (path to requirements.txt file)
-      > 
-6. If you are using windows, run 'run.cmd' file, but if you are using Linux or macOS compile cpsfs.py file to bytecodes and then just run the .pyc file with python. Just follow this [tutorial](https://www.geeksforgeeks.org/generate-byte-code-file-python/) and after that run this command (remember to replace ()). 
-    > python (path to complied file)
+5. If you are using Windows just run 'run.cmd' file, but if you are using Linux or MacOs run this commands in terminal (remember to replace the brackets)
+> cd (path to folder with the repository)\
+> pip install -r requirements.txt\
+> python cpsfs.py
+
    
 
 
