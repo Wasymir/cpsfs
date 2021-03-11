@@ -1,14 +1,15 @@
 import os
 import time
-
 class Blinking_light():
-    def __init__(self, threading):
+    def __init__(self, threading,frequency=0.5):
         self.on = False
+        self.frequency = frequency
+
         threading.start_new_thread(self.switch)
 
     def switch(self):
         self.on = not self.on
-        time.sleep(0.5)
+        time.sleep(self.frequency)
 
     def render(self):
         if self.on:
@@ -97,3 +98,6 @@ class Cli_element():
             self.content = ["Make terminal window wider!!!".center(os.get_terminal_size()[0])]
         else:
             self.content = [('||' + line + '||').center(os.get_terminal_size()[0]) for line in self.content]
+
+
+

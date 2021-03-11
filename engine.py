@@ -1,9 +1,10 @@
-import time
-import os
-import threading
-import random
-import keyboard
 import math
+import os
+import random
+import threading
+import time
+
+import keyboard
 
 
 class Engine():
@@ -31,8 +32,25 @@ class Engine():
                 thread.stop_thread()
 
     class Key_manager():
-        def register_hotkey(self, function):
-            keyboard.add_hotkey((function.__name__).split('_')[0], function, timeout=0.2)
+        def __init__(self):
+            self.blocked = False
+
+        def register_hotkey(self, function,important=False):
+            keyboard.add_hotkey((function.__name__).split('_')[0],self.key_function,args=[function,important], timeout=0.2)
+
+        def key_function(self,function,important):
+            if not self.blocked or important:
+                function()
+
+        def block_keyboard(self):
+            self.blocked = True
+
+        def un_block_keyboard(self):
+            self.blocked = False
+
+
+
+
 
         def unhook_all(self):
             keyboard.unhook_all()
@@ -112,15 +130,19 @@ class Engine():
     class Space_Ship():
         class Movement():
             def __init__(self, key_manager, thread_manager):
+                self.velocity = [0,0,0]
+                self.rotation = [0,0,0]
                 self.stop_active = False
-                self.reverse_thrust = False
                 self.thrust = 0
-                self.lr_rotation = 0
-                self.tb_rotation = 0
-                self.lr_velocity = 0
-                self.fb_rotation = 90
-                self.tb_velocity = 0
-                self.fb_velocity = 0
+          
+                # 
+                self.rotation[2] = 0
+                self.rotation[0] = 0
+                self.velocity[2] = 0
+                self.rotation[1] = 90
+
+
+                self.velocity[1] = 0
                 self.fuel = 500
                 self.threading = thread_manager
                 key_manager.register_hotkey(self.a_l_rotation)
@@ -137,14 +159,17 @@ class Engine():
                 key_manager.register_hotkey(self.c_thrust_min)
                 thread_manager.start_new_thread(self.calculate_fuel)
 
-            def calculate_fuel(self):
-                self.fuel -= abs(self.thrust) / 300
+            def valid_fuel(self):
                 if self.fuel <= 0:
                     self.threading.stop_all()
                     keyboard.unhook_all()
                     os.system('cls')
-                    print("No Fuel")
+                    print("No Fuel".center(os.get_terminal_size()[0]))
                     time.sleep(10)
+
+            def calculate_fuel(self):
+                self.fuel -= abs(self.thrust) / 300
+                self.valid_fuel()
                 time.sleep(0.1)
 
             def valid_angle(self, angle):
@@ -176,64 +201,64 @@ class Engine():
                     return (360 - angle) * -1
 
             def a_l_rotation(self):
-                self.lr_rotation = self.valid_angle(self.lr_rotation - 2)
-                if self.calculate_angle_factor(self.tb_rotation) != 0:
-                    if self.calculate_angle_factor(self.fb_rotation) != 0:
-                        self.tb_rotation = self.valid_angle(self.tb_rotation - 1)
-                        self.fb_rotation = self.valid_angle(self.fb_rotation - 1)
+                self.rotation[2] = self.valid_angle(self.rotation[2] - 2)
+                if self.calculate_angle_factor(self.rotation[0]) != 0:
+                    if self.calculate_angle_factor(self.rotation[1]) != 0:
+                        self.rotation[0] = self.valid_angle(self.rotation[0] - 1)
+                        self.rotation[1] = self.valid_angle(self.rotation[1] - 1)
                     else:
-                        self.tb_rotation = self.valid_angle(self.tb_rotation - 2)
+                        self.rotation[0] = self.valid_angle(self.rotation[0] - 2)
                 else:
-                    self.fb_rotation = self.valid_angle(self.fb_rotation - 2)
+                    self.rotation[1] = self.valid_angle(self.rotation[1] - 2)
 
             def d_r_rotation(self):
-                self.lr_rotation = self.valid_angle(self.lr_rotation + 2)
-                if self.calculate_angle_factor(self.tb_rotation) != 0:
-                    if self.calculate_angle_factor(self.fb_rotation) != 0:
-                        self.tb_rotation = self.valid_angle(self.tb_rotation + 1)
-                        self.fb_rotation = self.valid_angle(self.fb_rotation + 1)
+                self.rotation[2] = self.valid_angle(self.rotation[2] + 2)
+                if self.calculate_angle_factor(self.rotation[0]) != 0:
+                    if self.calculate_angle_factor(self.rotation[1]) != 0:
+                        self.rotation[0] = self.valid_angle(self.rotation[0] + 1)
+                        self.rotation[1] = self.valid_angle(self.rotation[1] + 1)
                     else:
-                        self.tb_rotation = self.valid_angle(self.tb_rotation + 2)
+                        self.rotation[0] = self.valid_angle(self.rotation[0] + 2)
                 else:
-                    self.fb_rotation = self.valid_angle(self.fb_rotation + 2)
+                    self.rotation[1] = self.valid_angle(self.rotation[1] + 2)
 
             def w_t_rotation(self):
-                self.tb_rotation = self.valid_angle(self.tb_rotation + 2)
-                if self.calculate_angle_factor(self.lr_rotation) != 0:
-                    if self.calculate_angle_factor(self.fb_rotation) != 0:
-                        self.lr_rotation = self.valid_angle(self.lr_rotation - 1)
-                        self.fb_rotation = self.valid_angle(self.fb_rotation - 1)
+                self.rotation[0] = self.valid_angle(self.rotation[0] + 2)
+                if self.calculate_angle_factor(self.rotation[2]) != 0:
+                    if self.calculate_angle_factor(self.rotation[1]) != 0:
+                        self.rotation[2] = self.valid_angle(self.rotation[2] - 1)
+                        self.rotation[1] = self.valid_angle(self.rotation[1] - 1)
                     else:
-                        self.lr_rotation = self.valid_angle(self.lr_rotation - 2)
+                        self.rotation[2] = self.valid_angle(self.rotation[2] - 2)
                 else:
-                    self.fb_rotation = self.valid_angle(self.fb_rotation - 2)
+                    self.rotation[1] = self.valid_angle(self.rotation[1] - 2)
 
             def s_b_rotation(self):
-                self.tb_rotation = self.valid_angle(self.tb_rotation - 2)
-                if self.calculate_angle_factor(self.lr_rotation) != 0:
-                    if self.calculate_angle_factor(self.fb_rotation) != 0:
-                        self.lr_rotation = self.valid_angle(self.lr_rotation + 1)
-                        self.fb_rotation = self.valid_angle(self.fb_rotation + 1)
+                self.rotation[0] = self.valid_angle(self.rotation[0] - 2)
+                if self.calculate_angle_factor(self.rotation[2]) != 0:
+                    if self.calculate_angle_factor(self.rotation[1]) != 0:
+                        self.rotation[2] = self.valid_angle(self.rotation[2] + 1)
+                        self.rotation[1] = self.valid_angle(self.rotation[1] + 1)
                     else:
-                        self.lr_rotation = self.valid_angle(self.lr_rotation + 2)
+                        self.rotation[2] = self.valid_angle(self.rotation[2] + 2)
                 else:
-                    self.fb_rotation = self.valid_angle(self.fb_rotation + 2)
+                    self.rotation[1] = self.valid_angle(self.rotation[1] + 2)
 
             def q_trust_up(self):
                 self.thrust = self.valid_trust(self.thrust + 1)
-                # time.sleep(0.2)
 
             def e_trust_down(self):
                 self.thrust = self.valid_trust(self.thrust - 1)
-                # time.sleep(0.2)
 
             def r_landing_engine_up(self):
-                self.tb_velocity = self.valid_trust(self.tb_velocity + 0.2)
-                # time.sleep(0.2)
+                self.velocity[0] = self.valid_trust(self.velocity[0] + 0.2)
+                self.fuel -= 0.2
+                self.valid_fuel()
 
             def f_landing_engine_down(self):
-                self.tb_velocity = self.valid_trust(self.tb_velocity - 0.2)
-                # time.sleep(0.2)
+                self.velocity[0] = self.valid_trust(self.velocity[0] - 0.2)
+                self.fuel -= 0.2
+                self.valid_fuel()
 
             def x_emergency_trust_brake(self):
                 self.thrust = 0
@@ -249,9 +274,9 @@ class Engine():
                     return thrust * angle_factor / 900
 
                 return {
-                    'lr': calculate_delta(self.calculate_angle_factor(self.lr_rotation), self.thrust),
-                    'tb': calculate_delta(self.calculate_angle_factor(self.tb_rotation), self.thrust),
-                    'fb': calculate_delta(self.calculate_angle_factor(self.fb_rotation), self.thrust)
+                    'lr': calculate_delta(self.calculate_angle_factor(self.rotation[2]), self.thrust),
+                    'tb': calculate_delta(self.calculate_angle_factor(self.rotation[0]), self.thrust),
+                    'fb': calculate_delta(self.calculate_angle_factor(self.rotation[1]), self.thrust)
                 }
 
             def validate_velocity(self, velocity):
@@ -263,9 +288,9 @@ class Engine():
                     return velocity
 
             def calculate_current_velocity(self):
-                self.tb_velocity = self.validate_velocity(self.calculate_velocity_delta()['tb'] + self.tb_velocity)
-                self.lr_velocity = self.validate_velocity(self.calculate_velocity_delta()['lr'] + self.lr_velocity)
-                self.fb_velocity = self.validate_velocity(self.calculate_velocity_delta()['fb'] + self.fb_velocity)
+                self.velocity[0] = self.validate_velocity(self.calculate_velocity_delta()['tb'] + self.velocity[0])
+                self.velocity[2] = self.validate_velocity(self.calculate_velocity_delta()['lr'] + self.velocity[2])
+                self.velocity[1] = self.validate_velocity(self.calculate_velocity_delta()['fb'] + self.velocity[1])
                 time.sleep(0.1)
 
         class Position():
@@ -287,9 +312,9 @@ class Engine():
                 time.sleep(0.1)
 
             def calculate_coordinates_delta(self):
-                return {'z': self.movement_engine.tb_velocity / 10000,
-                        'x': self.movement_engine.fb_velocity / 10000,
-                        'y': self.movement_engine.lr_velocity / 10000, }
+                return {'z': self.movement_engine.velocity[0] / 10000,
+                        'x': self.movement_engine.velocity[1] / 10000,
+                        'y': self.movement_engine.velocity[2] / 10000, }
 
             def calculate_current_coordinates(self):
                 self.detailed_coordinates[0] = self.detailed_coordinates[0] + self.calculate_coordinates_delta()[
@@ -330,17 +355,113 @@ class Engine():
                     self.threading.stop_all()
                     keyboard.unhook_all()
                     os.system('cls')
-                    print("You've crashed")
+                    print("You've crashed".center(os.get_terminal_size()[0]))
                     time.sleep(10)
                 time.sleep(0.1)
 
+        class Auto_pilot():
+            class Land_Takeoff():
+                def __init__(self, movement, position, thread_manager, key_manager, map):
+                    self.key_manager = key_manager
+                    self.landed = True
+                    self.movement = movement
+                    self.position = position
+                    self.map = map
+                    self.status = 3
+                    thread_manager.start_new_thread(self.refresh_landing_contidions)
+                    thread_manager.start_new_thread(self.refresh_keyboard)
+                    key_manager.register_hotkey(self.n_land)
+                    key_manager.register_hotkey(self.m_takeoff,important=True)
+
+                def refresh_keyboard(self):
+                    if self.status == 2 or self.status == 3:
+                        self.key_manager.block_keyboard()
+                    else:
+                        self.key_manager.un_block_keyboard()
+                    time.sleep(0.1)
+
+                def refresh_landing_contidions(self):
+                    if all([
+                                all(velocity <= 0.2 for velocity in self.movement.velocity),
+                                self.position.detailed_coordinates[0] - self.map.map.terrain[self.position.simplified_coordinates[1]][self.position.simplified_coordinates[2]] <= 0.5,
+                                self.position.detailed_coordinates[0] - self.map.map.terrain[self.position.simplified_coordinates[1]][self.position.simplified_coordinates[2]] >= 0.05,
+                                self.movement.thrust == 0,
+                                self.status <= 1
+
+                           ]):
+                        self.status = 1
+                    elif self.status <= 1:
+                        self.status = 0
+
+                    time.sleep(0.1)
+
+                def n_land(self):
+                    def remove_rotation(rotation):
+                        for index,value in enumerate(rotation[:1]):
+                            while rotation[index] != 0:
+                                if rotation[index] > 0:
+                                    rotation[index] -= 1
+                                elif rotation[index] < 0:
+                                    rotation[index] += 1
+                                time.sleep(0.1)
+
+                    def landing_procedure(movement,position,map):
+                        def landing_controller(position,map):
+                            if round(position.detailed_coordinates[0] - map.map.terrain[position.simplified_coordinates[1]][position.simplified_coordinates[2]],3) == 0:
+                                return False
+                            else:
+                                return True
+
+                        movement.fuel -= 2
+                        movement.valid_fuel()
+                        while landing_controller(position,map):
+                            movement.velocity = [-4,0,0]
+                            time.sleep(0.05)
+                        movement.velocity = [0, 0, 0]
+
+                    self.status = 2
+                    self.movement.velocity = [0,0,0]
+                    remove_rotation(self.movement.rotation)
+                    landing_procedure(self.movement,self.position,self.map)
+                    self.status = 3
+
+                def m_takeoff(self):
+
+                    if self.status == 3:
+                        self.status = 2
+                        self.movement.fuel -= 2
+                        self.movement.valid_fuel()
+                        while self.position.detailed_coordinates[0] - self.map.map.terrain[self.position.simplified_coordinates[1]][self.position.simplified_coordinates[2]] < 0.05:
+                            self.movement.velocity = [5,0,0]
+                            time.sleep(0.01)
+                        self.movement.velocity = [0,0,0]
+                        self.status = 0
+
+
+
+
+
+
+
+
+
+
+
+
+            def __init__(self, movement, position, thread_manager, key_manager, map):
+                self.land_takeoff = self.Land_Takeoff(movement, position, thread_manager, key_manager, map)
         def __init__(self, map, key_manager, thread_manager):
             self.movement = self.Movement(key_manager, thread_manager)
             self.position = self.Position(self.movement, thread_manager, map)
             self.collision = self.Collision(thread_manager, map, self.position)
+            self.auto_pilot = self.Auto_pilot(self.movement,self.position,thread_manager,key_manager,map)
+
+
+
 
     def __init__(self, map_width, map_length, map_height):
         self.map = self.Game_Map(map_height, map_length, map_width)
         self.threads_manager = self.Threads_manager()
         self.key_manager = self.Key_manager()
         self.player = self.Space_Ship(self.map, self.key_manager, self.threads_manager)
+

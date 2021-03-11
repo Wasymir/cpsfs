@@ -1,5 +1,6 @@
-import time
 import os
+import time
+
 import keyboard
 
 
@@ -10,13 +11,16 @@ class Console_Python_Space_Flight_Simulator():
             def __init__(self, engine):
                 from graphic import Blinking_light, Cli_element
                 self.blink_light = Blinking_light(engine.threads_manager)
+                self.blink_light_faster = Blinking_light(engine.threads_manager,frequency=0.1)
                 self.position = engine.player.position
                 self.movement = engine.player.movement
                 self.map = engine.map
+                self.auto_pilot = engine.player.auto_pilot
                 self.data_table = Cli_element()
                 self.data_map_terrain = Cli_element()
                 self.graphic_2d_map_x = Cli_element()
                 self.graphic_2d_map_y = Cli_element()
+                self.message = Cli_element()
                 self.screen = Cli_element()
 
             def render_data_table(self):
@@ -44,6 +48,18 @@ class Console_Python_Space_Flight_Simulator():
                     else:
                         return '   '
 
+                def render_landing_conditions(landing, blink_light,blinking_light_faster):
+                    if landing.status == 3:
+                        return '###'
+                    elif landing.status == 2:
+                        return blinking_light_faster.render()
+                    elif landing.status == 1:
+                        return blink_light.render()
+                    elif landing.status == 0:
+                        return '   '
+
+
+
                 self.data_table.content.clear()
                 self.data_table.generate_element_as_column(
                     S_Position=[
@@ -59,19 +75,22 @@ class Console_Python_Space_Flight_Simulator():
                          'R.H.W': render_relative_height_warning(self.position, self.map, self.blink_light)}
                     ],
                     Rotation=[
-                        {'z': self.position.movement_engine.lr_rotation,
-                         'x': self.position.movement_engine.tb_rotation}
+                        {'z': self.position.movement_engine.rotation[2],
+                         'x': self.position.movement_engine.rotation[0]}
                     ],
                     Velocity=[
-                        {'z': "%.1f" % round(self.position.movement_engine.tb_velocity, 1),
-                         'x': "%.1f" % round(self.position.movement_engine.fb_velocity, 1),
-                         'y': "%.1f" % round(self.position.movement_engine.lr_velocity, 1)},
+                        {'z': "%.1f" % round(self.position.movement_engine.velocity[0], 1),
+                         'x': "%.1f" % round(self.position.movement_engine.velocity[1], 1),
+                         'y': "%.1f" % round(self.position.movement_engine.velocity[2], 1)},
                         {'tr': self.position.movement_engine.thrust}
                     ],
                     Fuel=[
                         {'fl': '%.2f' % round(self.movement.fuel, 2),
                          'F.L.W': render_fuel_level_warning(self.movement, self.blink_light)}
-                    ]
+                    ],
+                    Landing=[
+                        {'L.A':render_landing_conditions(self.auto_pilot.land_takeoff,self.blink_light,self.blink_light_faster),'s':self.auto_pilot.land_takeoff.status}
+                    ],
                 )
 
             def render_terrain_map(self):
@@ -228,7 +247,8 @@ class Console_Python_Space_Flight_Simulator():
                     [self.data_table,
                      self.data_map_terrain],
                     [self.graphic_2d_map_x,
-                     self.graphic_2d_map_y]
+                     self.graphic_2d_map_y],
+
                 )
 
             def test_print(self):
@@ -244,7 +264,7 @@ class Console_Python_Space_Flight_Simulator():
     def __init__(self):
         from engine import Engine
         self.engine = Engine(100, 100, 50)
-        self.engine.key_manager.register_hotkey(self.g_exit)
+        self.engine.key_manager.register_hotkey(self.g_exit,True)
         self.cli_test_graphic = self.Cli_graphic(self.engine)
         self.engine.threads_manager.start_new_thread(self.cli_test_graphic.game_view.test_print)
 
