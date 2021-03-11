@@ -85,7 +85,13 @@ ___
 | solid      | landed       (press t to take-off)| 
 | blinking   | landing conditions met (press l to land)|
 | loading  | landing / take-off in progress (wait)|
+___
+Conditions required to start Auto Landing
 
+| parameter      | requirement |
+| :---        |    :----:   |
+|  Velocity x, y & z    | < 0.2| 
+| Relative height   | <0.5, >0.05|
 ___
 ___
 ### Terrain Height map
@@ -142,6 +148,8 @@ ___
 |  c    |   Thrust Min (sets thrust to -100)    | 
 |  r    |  Landing Engines up (raises z axis movement velocity)     | 
 |  f    |  Landing Engines down (decrease z axis movement velocity)    | 
+|  t    |  Take off (read [Auto_TK_Sys description](https://github.com/Wasymir/cpsfs#auto_tk_sys---automatic-take-off-and-landing-system))   | 
+|  l    |  Land (read [Auto_TK_Sys description](https://github.com/Wasymir/cpsfs#auto_tk_sys---automatic-take-off-and-landing-system)) | 
 |  g    |  quit     | 
 ___
 ___
