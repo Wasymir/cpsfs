@@ -370,8 +370,8 @@ class Engine():
                     self.status = 3
                     thread_manager.start_new_thread(self.refresh_landing_contidions)
                     thread_manager.start_new_thread(self.refresh_keyboard)
-                    key_manager.register_hotkey(self.n_land)
-                    key_manager.register_hotkey(self.m_takeoff,important=True)
+                    key_manager.register_hotkey(self.l_land)
+                    key_manager.register_hotkey(self.t_takeoff,important=True)
 
                 def refresh_keyboard(self):
                     if self.status == 2 or self.status == 3:
@@ -395,7 +395,7 @@ class Engine():
 
                     time.sleep(0.1)
 
-                def n_land(self):
+                def l_land(self):
                     def remove_rotation(rotation):
                         for index,value in enumerate(rotation[:1]):
                             while rotation[index] != 0:
@@ -425,8 +425,7 @@ class Engine():
                     landing_procedure(self.movement,self.position,self.map)
                     self.status = 3
 
-                def m_takeoff(self):
-
+                def t_takeoff(self):
                     if self.status == 3:
                         self.status = 2
                         self.movement.fuel -= 2
@@ -436,6 +435,7 @@ class Engine():
                             time.sleep(0.01)
                         self.movement.velocity = [0,0,0]
                         self.status = 0
+
 
 
 

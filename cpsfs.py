@@ -9,9 +9,9 @@ class Console_Python_Space_Flight_Simulator():
         class Game_view():
 
             def __init__(self, engine):
-                from graphic import Blinking_light, Cli_element
+                from graphic import Blinking_light, Cli_element, In_progress_light
                 self.blink_light = Blinking_light(engine.threads_manager)
-                self.blink_light_faster = Blinking_light(engine.threads_manager,frequency=0.1)
+                self.in_progress_light = In_progress_light(engine.threads_manager)
                 self.position = engine.player.position
                 self.movement = engine.player.movement
                 self.map = engine.map
@@ -20,7 +20,6 @@ class Console_Python_Space_Flight_Simulator():
                 self.data_map_terrain = Cli_element()
                 self.graphic_2d_map_x = Cli_element()
                 self.graphic_2d_map_y = Cli_element()
-                self.message = Cli_element()
                 self.screen = Cli_element()
 
             def render_data_table(self):
@@ -48,11 +47,11 @@ class Console_Python_Space_Flight_Simulator():
                     else:
                         return '   '
 
-                def render_landing_conditions(landing, blink_light,blinking_light_faster):
+                def render_landing_conditions(landing, blink_light,in_progress_light):
                     if landing.status == 3:
                         return '###'
                     elif landing.status == 2:
-                        return blinking_light_faster.render()
+                        return in_progress_light.render()
                     elif landing.status == 1:
                         return blink_light.render()
                     elif landing.status == 0:
@@ -86,10 +85,11 @@ class Console_Python_Space_Flight_Simulator():
                     ],
                     Fuel=[
                         {'fl': '%.2f' % round(self.movement.fuel, 2),
+
                          'F.L.W': render_fuel_level_warning(self.movement, self.blink_light)}
                     ],
-                    Landing=[
-                        {'L.A':render_landing_conditions(self.auto_pilot.land_takeoff,self.blink_light,self.blink_light_faster),'s':self.auto_pilot.land_takeoff.status}
+                    Auto_TL_Sys=[
+                        {'S.I.':render_landing_conditions(self.auto_pilot.land_takeoff,self.blink_light,self.in_progress_light)}
                     ],
                 )
 

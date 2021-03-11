@@ -17,6 +17,27 @@ class Blinking_light():
         else:
             return '   '
 
+class In_progress_light():
+    def __init__(self,threding,frequency=0.5):
+        self.counter = 0
+        self.frequency = frequency
+        threding.start_new_thread(self.swap_counter)
+    def swap_counter(self):
+        def valid_counter(counter):
+            if counter > 3:
+                return 0
+            else:
+                return counter
+        
+        self.counter = valid_counter(self.counter + 1)
+        time.sleep(self.frequency)
+    
+    def render(self):
+        return ('#' * self.counter).rjust(3)
+    
+        
+
+
 class Cli_element():
     def __init__(self):
         self.content = []

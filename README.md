@@ -74,6 +74,20 @@ ___
 | F.L.W   | Fuel Level Warning - starts blinking if fl < 50 |
 ___
 ___
+### Auto_TK_Sys -> Automatic Take-off and Landing System
+___
+| property      | Description |
+| :---        |    :----:   |
+| S.I      | State Indicator       | 
+___
+| S.I state      | Description |
+| :---        |    :----:   |
+| solid      | landed       (press t to take-off)| 
+| blinking   | landing conditions met (press l to land)|
+| loading  | landing / take-off in progress (wait)|
+
+___
+___
 ### Terrain Height map
 Used for navigation and determination of altitude on a given map block.
 ___
